@@ -1,11 +1,92 @@
 import express from 'express';
+import { login, changepassword } from "../controllers/authController.js";
+import { verifyToken } from "../middlewares/auth.js";
 const router = express.Router();
 import { allSheet, AllDimensionsforOneSheet, allVisuforOneSheet, exportReportController } from '../controllers/report.js';
 /**
  * @swagger
+ * /login:
+ *   post:
+ *     summary: Authenticate user and return JWT token
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: "admin"
+ *               password:
+ *                 type: string
+ *                 example: "Password123"
+ *     responses:
+ *       200:
+ *         description: JWT token received
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ */
+router.post("/login", login);
+/**
+ * @swagger
+ * /change-password:
+ *   post:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Change user password
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *               - newpassword
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: "admin"
+ *               oldpassword:
+ *                 type: string
+ *                 example: "Password123"
+ *               newpassword:
+ *                 type: string
+ *                 example: "NewPassword123"
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Password updated successfully"
+ *       400:
+ *         description: Bad request (invalid JSON or fields)
+ *       401:
+ *         description: Unauthorized (wrong password or missing/invalid JWT)
+ */
+router.post("/change-password", verifyToken, changepassword);
+/**
+ * @swagger
  * /sheets:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Retrieve a list of sheets
+ *     tags: [Qlik]
  *     requestBody:
  *       required: true
  *       content:
@@ -21,44 +102,21 @@ import { allSheet, AllDimensionsforOneSheet, allVisuforOneSheet, exportReportCon
  *                 example: "cecim.us.qlikcloud.com"
  *               apiKey:
  *                 type: string
- *                 example: "eyJhbGciOiJFUzM4NCIsImtpZCI6IjA2M2UwNTEzLTZmNzctNGRmNC1hZTcyLTFjNjdlNWE1OGI0ZCIsInR5cCI6IkpXVCJ9.eyJzdWJUeXBlIjoidXNlciIsInRlbmFudElkIjoiMzF3dVlyX1hxYWVJTlVOeC1nMEszNUtxQ2dXVWdKX2YiLCJqdGkiOiIwNjNlMDUxMy02Zjc3LTRkZjQtYWU3Mi0xYzY3ZTVhNThiNGQiLCJhdWQiOiJxbGlrLmFwaSIsImlzcyI6InFsaWsuYXBpL2FwaS1rZXlzIiwic3ViIjoiNjcxMjZjMmY1M2RjYjdjNGUxNmMxYzFkIn0.iTVYig9CpHZaOmu82gPxnH_XoLZBNcpHmq2Z6ucx9An9jI2Q9W8djOtE7ya4VYT005NnZCfGK_IqiSPzAyoCXomXuoi34ZxC_8grgRUVNwfgg7vAWBMbsJOvgsqyDbVa"
+ *                 example: "eyJhbGciOiJFUzM4NCIsImtpZCI6IjA2M2UwNTEzLT...etc"
  *     responses:
  *       200:
  *         description: A list of sheets
  */
-router.post("/sheets", allSheet);
-// /**
-//  * @swagger
-//  * /structure:
-//  *   post:
-//  *     summary: All structure of a session
-//  *     requestBody:
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           schema:
-//  *             type: object
-//  *             properties:
-//  *               appId:
-//  *                 type: string
-//  *                 example: "12a23fc3-1bef-450d-be07-9865ef2eb274"
-//  *               tenant:
-//  *                 type: string
-//  *                 example: "cecim.us.qlikcloud.com"
-//  *               apiKey:
-//  *                 type: string
-//  *                 example: "eyJhbGciOiJFUzM4NCIsImtpZCI6IjA2M2UwNTEzLTZmNzctNGRmNC1hZTcyLTFjNjdlNWE1OGI0ZCIsInR5cCI6IkpXVCJ9.eyJzdWJUeXBlIjoidXNlciIsInRlbmFudElkIjoiMzF3dVlyX1hxYWVJTlVOeC1nMEszNUtxQ2dXVWdKX2YiLCJqdGkiOiIwNjNlMDUxMy02Zjc3LTRkZjQtYWU3Mi0xYzY3ZTVhNThiNGQiLCJhdWQiOiJxbGlrLmFwaSIsImlzcyI6InFsaWsuYXBpL2FwaS1rZXlzIiwic3ViIjoiNjcxMjZjMmY1M2RjYjdjNGUxNmMxYzFkIn0.iTVYig9CpHZaOmu82gPxnH_XoLZBNcpHmq2Z6ucx9An9jI2Q9W8djOtE7ya4VYT005NnZCfGK_IqiSPzAyoCXomXuoi34ZxC_8grgRUVNwfgg7vAWBMbsJOvgsqyDbVa"
-//  *     responses:
-//  *       200:
-//  *         description: All structure of a session
-//  */
-// router.post("/structure", AllStructure);
+router.post("/sheets", verifyToken, allSheet);
 
 /**
  * @swagger
  * /dimensions:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Retrieve a list of dimensions for a specific sheet
+ *     tags: [Qlik]
  *     requestBody:
  *       required: true
  *       content:
@@ -82,12 +140,15 @@ router.post("/sheets", allSheet);
  *       200:
  *         description: Retrieve a list of dimensions for a specific sheet
  */
-router.post("/dimensions", AllDimensionsforOneSheet);
+router.post("/dimensions", verifyToken, AllDimensionsforOneSheet);
 /**
  * @swagger
  * /visualisations:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Retrieve a list of visualisations for a specific sheet
+ *     tags: [Qlik]
  *     requestBody:
  *       required: true
  *       content:
@@ -112,12 +173,15 @@ router.post("/dimensions", AllDimensionsforOneSheet);
  *         description: Retrieve a list of visu for a specific sheet
  */
 
-router.post("/visualisations", allVisuforOneSheet);
+router.post("/visualisations", verifyToken, allVisuforOneSheet);
 /**
  * @swagger
  * /export:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Export one visualisation, multiple visualisations, or a full sheet (PDF)
+ *     tags: [Qlik]
  *     description: |
  *       Three export modes are available:
  *       - **type: "one"** → export a single visualisation  
@@ -194,6 +258,6 @@ router.post("/visualisations", allVisuforOneSheet);
  *       500:
  *         description: Error during export
  */
-router.post("/export", exportReportController);
+router.post("/export", verifyToken, exportReportController);
 
 export default router;
