@@ -17,19 +17,20 @@ function fixQlikUrl(url, tenant) {
 
 (async () => {
     try {
-        const { appId, apiKey, tenant, visuId, fieldName, selectedValues, format } = workerData;
+        const { appId, apiKey, tenant, visuId, format, selections = [] } = workerData;
 
-        const selections = (selectedValues && selectedValues.length)
-            ? [{
-                fieldName,
-                stateName: "$",
-                defaultIsNumeric: false,
-                values: selectedValues.map(v => ({
-                    text: v,
-                    isNumeric: false
-                }))
-            }]
-            : [];
+        function buildSelectionsByState(selections) {
+    return {
+        "$": selections.map(sel => ({
+            fieldName: sel.fieldName,
+            defaultIsNumeric: false,
+            values: sel.values.map(v => ({
+                text: v,
+                isNumeric: false
+            }))
+        }))
+    };
+}
 
         const payload = JSON.stringify({
             type: "sense-image-1.0",
@@ -42,7 +43,7 @@ function fixQlikUrl(url, tenant) {
                     widthPx: 1500,
                     heightPx: 900
                 },
-                selectionsByState: { "$": selections }
+                selectionsByState: buildSelectionsByState(selections)
             },
             output: {
                 outputId: "visu-export-1",
@@ -137,7 +138,7 @@ function fixQlikUrl(url, tenant) {
         });
 
     } catch (err) {
-        console.error("🔥 FULL WORKER ERROR =", err);
+        console.error("FULL WORKER ERROR =", err);
         parentPort.postMessage({ error: err.message || "Worker error" });
     }
 })();

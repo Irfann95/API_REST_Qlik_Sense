@@ -96,7 +96,7 @@ router.post("/change-password", verifyToken, changepassword);
  *             properties:
  *               appId:
  *                 type: string
- *                 example: "12a23fc3-1bef-450d-be07-9865ef2eb274"
+ *                 example: "12a23fc3-1bef-..."
  *               tenant:
  *                 type: string
  *                 example: "cecim.us.qlikcloud.com"
@@ -126,13 +126,13 @@ router.post("/sheets", verifyToken, allSheet);
  *             properties:
  *               appId:
  *                 type: string
- *                 example: "12a23fc3-1bef-450d-be07-9865ef2eb274"
+ *                 example: "12a23fc3-1bef-...."
  *               tenant:
  *                 type: string
  *                 example: "cecim.us.qlikcloud.com"
  *               apiKey:
  *                 type: string
- *                 example: "qlik-api-key-example-here"
+ *                 example: "eyJhbGciOiJFUzM4NCIsImtpZCI6IjA2M2UwNTEzLT...etc"
  *               sheetId:
  *                 type: string
  *                 example: "tXWvQpA"
@@ -158,13 +158,13 @@ router.post("/dimensions", verifyToken, AllDimensionsforOneSheet);
  *             properties:
  *               appId:
  *                 type: string
- *                 example: "12a23fc3-1bef-450d-be07-9865ef2eb274"
+ *                 example: "12a23fc3-1bef-4..."
  *               tenant:
  *                 type: string
  *                 example: "cecim.us.qlikcloud.com"
  *               apiKey:
  *                 type: string
- *                 example: "qlik-api-key-example-here"
+ *                 example: "eyJhbGciOiJFUzM4NCIsImtpZCI6IjA2M2UwNTEzLT...etc"
  *               sheetId:
  *                 type: string
  *                 example: "tXWvQpA"
@@ -202,13 +202,13 @@ router.post("/visualisations", verifyToken, allVisuforOneSheet);
  *             properties:
  *               appId:
  *                 type: string
- *                 example: "12a23fc3-1bef-450d-be07-9865ef2eb274"
+ *                 example: "12a23fc3-1bef-450d-be..."
  *               tenant:
  *                 type: string
  *                 example: "cecim.us.qlikcloud.com"
  *               apiKey:
  *                 type: string
- *                 example: "<your-api-key>"
+ *                 example: "eyJhbGciOiJFUzM4NCIsImtpZCI6IjA2M2UwNTEzLT...etc"
  *               sheetId:
  *                 type: string
  *                 example: "tXWvQpA"
@@ -233,12 +233,19 @@ router.post("/visualisations", verifyToken, allVisuforOneSheet);
  *                 nullable: true
  *                 example: ["abc123", "xyz789"]
  *                 description: Only required when type = "multiple"
- *               fieldName:
- *                 type: string
- *               selectedValues:
+ *               selections:
  *                 type: array
  *                 items:
- *                   type: string
+ *                  type: object
+ *                  properties:
+ *                    fieldName:
+ *                      type: string
+ *                      example: "tva"
+ *                    values:
+ *                      type: array
+ *                      items:
+ *                        type: string
+ *                        example: ["normal"]
  *               format:
  *                 type: string
  *                 example: "pdf"

@@ -17,19 +17,20 @@ function fixQlikUrl(url, tenant) {
 
 (async () => {
     try {
-        const { appId, apiKey, tenant, sheetId, fieldName, selectedValues } = workerData;
+        const { appId, apiKey, tenant, sheetId, selections = [] } = workerData;
 
-        const selections = (selectedValues && selectedValues.length)
-            ? [{
-                fieldName,
-                stateName: "$",
-                defaultIsNumeric: false,
-                values: selectedValues.map(v => ({
-                    text: v,
-                    isNumeric: false
-                }))
-            }]
-            : [];
+        function buildSelectionsByState(selections) {
+    return {
+        "$": selections.map(sel => ({
+            fieldName: sel.fieldName,
+            defaultIsNumeric: false,
+            values: sel.values.map(v => ({
+                text: v,
+                isNumeric: false
+            }))
+        }))
+    };
+}
 
         const payload = JSON.stringify({
             type: "sense-sheet-1.0",
@@ -37,7 +38,7 @@ function fixQlikUrl(url, tenant) {
             senseSheetTemplate: {
                 appId,
                 sheet: { id: sheetId },
-                selectionsByState: { "$": selections }
+                selectionsByState: buildSelectionsByState(selections)
             },
             output: {
                 outputId: "sheet-export-1",
