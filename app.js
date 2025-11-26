@@ -8,8 +8,7 @@ const port = 3001;
 const corsOptions = {
   origin:  "*", 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content', 'Accept', 'Content-Type', 'Authorization'],
-  credentials: true, 
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content', 'Accept', 'Content-Type', 'Authorization'], 
 };
 const swaggerOptions = {
        swaggerDefinition: {
@@ -21,7 +20,7 @@ const swaggerOptions = {
            },
            servers: [
                {
-                   url: `http://localhost:${port}/api`,
+                   url: `http://51.77.84.90:3001/api`,
                },
            ],
       components: {
