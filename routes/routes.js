@@ -242,10 +242,12 @@ router.post("/visualisations", verifyToken, allVisuforOneSheet);
  *                      type: string
  *                      example: "tva"
  *                    values:
- *                      type: array
- *                      items:
- *                        type: string
- *                        example: ["normal"]
+ *                      type: string
+ *                      example: "normal"
+ *                      description: |
+ *                        Value(s) to select. For multiple values, use comma-separated string.
+ *                        Example single value: "normal"
+ *                        Example multiple values: "value1,value2,value3"
  *               format:
  *                 type: string
  *                 example: "pdf"
